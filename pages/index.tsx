@@ -100,9 +100,6 @@ const Home: NextPage<{result: Result}> = ({result}) => {
                 label="Action type"
                 onChange={e => setActionTypeInput(e.target.value)}
               >
-                <MenuItem value="">
-                    No select
-                </MenuItem>
                 {Object.keys(ActionType).map((keyName: string , index: number) => (
                     <MenuItem value={ActionType[keyName as Action]} key={index}>
                         {ActionType[keyName as Action]}
@@ -120,9 +117,6 @@ const Home: NextPage<{result: Result}> = ({result}) => {
                 label="Application type"
                 onChange={e => setApplicationTypeInput(e.target.value)}
               >
-                <MenuItem value="">
-                    No select
-                </MenuItem>
                 {Object.keys(ApplicationType).map((keyName: string , index: number) => (
                     <MenuItem value={ApplicationType[keyName as Application]} key={index}>
                         {ApplicationType[keyName as Application]}
