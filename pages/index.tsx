@@ -5,9 +5,9 @@ import dayjs, { Dayjs } from 'dayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useSearchParams } from 'next/navigation';
 import { ActionType, ApplicationType } from "../types/loggers";
 import { useRef, useState } from "react";
+import moment from "moment";
 
 
 export default function Home() {
@@ -27,8 +27,8 @@ export default function Home() {
       ...(employeeNameInput.current!.value && {logId: employeeNameInput.current!.value}),
       ...(actionTypeInput && {actionType: actionTypeInput}),
       ...(applicationTypeInput && {applicationType: applicationTypeInput}),
-      ...(fromDateInput && {fromDate: fromDateInput}),
-      ...(toDateInput && {toDate: toDateInput}),
+      ...(fromDateInput && {fromDate: moment(fromDateInput).format()}),
+      ...(toDateInput && {toDate: moment(toDateInput).format()}),
       ...(applicationIdInput.current!.value && {applicationId: applicationIdInput.current!.value}),
     };
     router.push(router)
