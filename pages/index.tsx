@@ -31,6 +31,8 @@ const columns: GridColDef[] = [
 ];
 
 const Home: NextPage<{result: Result}> = ({result}) => {
+  type Action = keyof typeof ActionType;
+  type Application = keyof typeof ApplicationType;
 
   const employeeNameInput = useRef<HTMLInputElement>(null);
   const [actionTypeInput, setActionTypeInput] = useState<string>('');
@@ -65,7 +67,7 @@ const Home: NextPage<{result: Result}> = ({result}) => {
     if(router.query.fromDate)
       data = data.filter((datum: any) => datum.creationTimestamp && moment(datum.creationTimestamp).diff(moment(router.query.fromDate),'s') >= 0)
     
-      if(router.query.toDate)
+    if(router.query.toDate)
       data = data.filter((datum: any) => datum.creationTimestamp && moment(datum.creationTimestamp).diff(moment(router.query.toDate),'s') <= 0)
     
     return data
@@ -101,9 +103,9 @@ const Home: NextPage<{result: Result}> = ({result}) => {
                 <MenuItem value="">
                     No select
                 </MenuItem>
-                {Object.keys(ActionType).map((keyName: string, index: number) => (
-                    <MenuItem value={ActionType[keyName]} key={index}>
-                        {ActionType[keyName]}
+                {Object.keys(ActionType).map((keyName: string , index: number) => (
+                    <MenuItem value={ActionType[keyName as Action]} key={index}>
+                        {ActionType[keyName as Action]}
                     </MenuItem>
                 ))}
               </Select>
@@ -121,9 +123,9 @@ const Home: NextPage<{result: Result}> = ({result}) => {
                 <MenuItem value="">
                     No select
                 </MenuItem>
-                {Object.keys(ApplicationType).map((keyName: string, index: number) => (
-                    <MenuItem value={ApplicationType[keyName]} key={index}>
-                        {ApplicationType[keyName]}
+                {Object.keys(ApplicationType).map((keyName: string , index: number) => (
+                    <MenuItem value={ApplicationType[keyName as Application]} key={index}>
+                        {ApplicationType[keyName as Application]}
                     </MenuItem>
                 ))}
               </Select>
