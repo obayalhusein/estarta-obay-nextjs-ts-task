@@ -62,6 +62,12 @@ const Home: NextPage<{result: Result}> = ({result}) => {
     .filter((datum: any)=> datum.applicationType?.toString?.()?.includes?.(router.query.applicationType || ""))
     .filter((datum: any)=> datum.applicationId?.toString?.()?.includes?.(router.query.applicationId || ""))
 
+    if(router.query.fromDate)
+      data = data.filter((datum: any) => datum.creationTimestamp && moment(datum.creationTimestamp).diff(moment(router.query.fromDate),'s') >= 0)
+    
+      if(router.query.toDate)
+      data = data.filter((datum: any) => datum.creationTimestamp && moment(datum.creationTimestamp).diff(moment(router.query.toDate),'s') <= 0)
+    
     return data
   }
 
