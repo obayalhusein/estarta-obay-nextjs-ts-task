@@ -1,5 +1,5 @@
 ## Hello Estarta :)
-This is Next js project on Typescript language, I was trying to show an example of (SSR, SSR, Static) on 3 diffrenet pages
+This is Next js project on Typescript language, I was trying to show an example of (SSR, SSR, Static) on 3 diffrenet pages, but I didn't have time to finish it.
 
 ### Dependencies:
 - Material UI
@@ -20,3 +20,8 @@ I usually deploy my project Digital Ocean for deploying my projects, but I decid
 - Split the homepage into a smaller and scalable components
 - Move the API to a seprate file and add Axios with configration setup
 - Improve the filter Big(O) (I could use 1 filter to make it faster, but I need the code to be readable for now)
+- Use Memo to avoid re-rendering the page
+- Fill the input fields from the query params on refresh
+- Add reset button to the filter
+- Create setup Material UI with custom theme
+- It took me 2 days to create this project it's been 2 years for me without using React.js
