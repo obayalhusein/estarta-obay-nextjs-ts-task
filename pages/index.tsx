@@ -1,16 +1,37 @@
+import { useRef, useState } from "react";
+import { GetStaticProps, NextPage } from 'next';
+import { useRouter } from "next/router";
+import Head from "next/head";
 import { Box, Breadcrumbs, Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography, Input } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { ActionType, ApplicationType } from "../types/loggers";
-import { useRef, useState } from "react";
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from "moment";
+import { ActionType, ApplicationType, GetLoggerResults, Result } from "../types/loggers";
 
+export const getStaticProps: GetStaticProps = async (context) => {
+  const res = await fetch("https://run.mocky.io/v3/a2fbc23e-069e-4ba5-954c-cd910986f40f");
+  const {result}: GetLoggerResults = await res.json();
 
-export default function Home() {
+  return {
+    props: {
+      result: result,
+    }
+  }
+}
+
+const columns: GridColDef[] = [
+  { field: 'logId', headerName: 'Log ID', width: 150 },
+  { field: 'applicationType', headerName: 'Aplication Type', width: 150 },
+  { field: 'applicationId', headerName: 'Application ID', width: 150 },
+  { field: 'actionType', headerName: 'Action Type', width: 150 },
+  { field: '', headerName: 'Action Details', width: 150 },
+  { field: 'creationTimestamp', headerName: 'Date: Time', width: 150 },
+];
+
+const Home: NextPage<{result: Result}> = ({result}) => {
+
   const employeeNameInput = useRef<HTMLInputElement>(null);
   const [actionTypeInput, setActionTypeInput] = useState<string>('');
   const [applicationTypeInput, setApplicationTypeInput] = useState<string>('');
@@ -24,7 +45,7 @@ export default function Home() {
     e.preventDefault();
 
     router.query = {
-      ...(employeeNameInput.current!.value && {logId: employeeNameInput.current!.value}),
+      ...(employeeNameInput.current!.value && {logInfo: employeeNameInput.current!.value}),
       ...(actionTypeInput && {actionType: actionTypeInput}),
       ...(applicationTypeInput && {applicationType: applicationTypeInput}),
       ...(fromDateInput && {fromDate: moment(fromDateInput).format()}),
@@ -32,8 +53,17 @@ export default function Home() {
       ...(applicationIdInput.current!.value && {applicationId: applicationIdInput.current!.value}),
     };
     router.push(router)
-    console.log(router.query);
-  } 
+  }
+  
+  function getLoggersData(data: any) {
+    data = data
+    .filter((datum: any)=> datum.logInfo?.toString?.()?.includes?.(router.query.logInfo || ""))
+    .filter((datum: any)=> datum.actionType?.toString?.()?.includes?.(router.query.actionType || ""))
+    .filter((datum: any)=> datum.applicationType?.toString?.()?.includes?.(router.query.applicationType || ""))
+    .filter((datum: any)=> datum.applicationId?.toString?.()?.includes?.(router.query.applicationId || ""))
+
+    return data
+  }
 
   return (
     <div>
@@ -94,26 +124,26 @@ export default function Home() {
             </FormControl>
           </Grid>
           <Grid item sx={{ flex: 1 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
               <Stack spacing={3}>
                 <DesktopDatePicker
                   label="From Date"
                   inputFormat="MM/DD/YYYY"
                   value={fromDateInput}
-                  onChange={(newValue: Dayjs | null) => setFromDateInput(newValue)}
+                  onChange={(newValue: Date | null) => setFromDateInput(newValue)}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </Stack>
             </LocalizationProvider>
           </Grid>
           <Grid item sx={{ flex: 1 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
               <Stack spacing={3}>
                 <DesktopDatePicker
                   label="To Date"
                   inputFormat="MM/DD/YYYY"
                   value={toDateInput}
-                  onChange={(newValue: Dayjs | null) => setToDateInput(newValue)}
+                  onChange={(newValue: Date | null) => setToDateInput(newValue)}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </Stack>
@@ -128,7 +158,19 @@ export default function Home() {
         </Grid>
         </form>
 
+        <Box sx={{ height: 700, width: '100%' }}>
+          <DataGrid
+            getRowId={(row) => row.logId}
+            rows={getLoggersData(result.auditLog)}
+            columns={columns}
+            pageSize={11}
+            rowsPerPageOptions={[5]}
+          />
+        </Box>
+
       </Box>
     </div>
   )
 }
+
+export default Home;
